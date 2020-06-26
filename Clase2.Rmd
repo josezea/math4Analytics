@@ -1,0 +1,177 @@
+---
+title: "Untitled"
+author: "José Fernando zeea"
+date: "25/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Vectores
+
+Un vector de datos:
+
+$\mathbf{x} = (x_1, x_2, ... x_n)'$
+
+```{r}
+edad <- c(27, 30, 32, 27, 28)
+```
+
+Se pueden realizar varias operaciones:
+
+
+* Suma de un escalar a un vector:
+
+$\mathbf{x} + a = (x_1 + a, x_2 + a, ... x_n +a )'$, por ejemplo en 30 años los estudiantes tendrán:
+
+```{r}
+edad + 30
+```
+
+* Multiplicación de un escalar por un vector: 
+
+$c\mathbf{x} = (cx_1, cx_2, ... cx_n)'$, por ejemplo si se duplica la edad de un grupo de individuos:
+
+```{r}
+2 * edad 
+```
+
+# Suma de dos vectores
+
+$\mathbf{x}+\mathbf{y} = (x_1+y_1, x_2+y_2,\ldots x_n+y_n)$
+
+```{r}
+tiempo_ingles <- c(11, 7.5, 5, 7, 6)
+edad + tiempo_ingles
+```
+
+```{r}
+class(edad) # Vector númeric
+```
+
+
+## Matrices
+
+Tipicamente se define una matriz con n filas (datos) y p columnas (asociadas a las variables):
+
+Ingresar la siguiente matriz en R
+\begin{equation}
+\begin{pmatrix}
+2 & 5 & 0\\
+7 & 3 & 8\\
+3 & 0 & 1
+\end{pmatrix}
+\end{equation}
+
+```{r}
+matriz <- matrix(c(2, 7, 3, 5, 3, 0, 0, 8, 1), nrow = 3, ncol = 3)
+matriz
+```
+
+```{r}
+class(matriz)
+```
+
+
+# Multiplicar una matriz por un escalar
+
+```{r}
+matriz <- matrix(c(2, 7, 3, 5, 3, 0, 0, 8, 1), nrow = 3, ncol = 3)
+matriz
+5 * matriz
+```
+
+# Suma de dos matrices
+
+```{r}
+A1 <- matrix(c(60, 30, 20, 80, 48, 24), nrow = 3, ncol = 2)
+A2 <- matrix(c(55, 40, 25, 82, 50, 30), nrow = 3, ncol = 2)
+```
+
+```{r}
+A1 + A2
+```
+
+```{r}
+pander::pander(A1 + A2)
+```
+
+
+# Producto punto entre dos vectores
+
+```{r}
+a <- c(2, 3)
+b <- c(100, 200)
+sum(a * b)
+```
+
+
+# Multiplicación matricial
+
+```{r}
+C <- matrix(c(2, 3, 4, 5), ncol = 2)
+D <- matrix(c(100, -100, 200, 50), ncol = 2)
+# Esto no es multiplicación matricial (elemento a elemtno)
+C
+D
+cat("Esto no es multiplicación matricial")
+C * D
+
+```
+
+
+```{r}
+# Esta si es la multiplicación matricial:
+C %*% D
+```
+
+# Matriz identidad
+
+```{r}
+diag(5)
+```
+
+```{r}
+# En matrices cuadradas
+A <- matrix(1:25, ncol = 5)
+I <- diag(5)
+cat("A \n")
+A
+cat("identidad \n")
+I
+A %*% I 
+```
+
+
+
+# Inversa de una matriz
+
+
+```{r}
+4 * (1/4)
+(7/8) * (8/7)
+(-4/5) * (-5/4)
+```
+
+
+
+```{r}
+A <- matrix(c(1, 5, 2, 8), ncol = 2)
+A
+```
+ Así se calcula la matriz identidad (con solve)
+
+```{r}
+solve(A) # La matriz identidad
+```
+
+
+Verifiquemos que con solve(A) si se obtiene la inversa de A
+
+
+```{r}
+A %*% solve(A) # V
+```
