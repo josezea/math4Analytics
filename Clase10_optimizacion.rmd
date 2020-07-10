@@ -1,0 +1,110 @@
+---
+title: "Untitled"
+author: "José Fernando zeea"
+date: "9/7/2020"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Mínimos cuadrados 
+
+$$ y_i = \beta_0+\beta_1x_i+e_i=\hat{y}_i+e_i$$
+
+$i = 1,\ldots n$
+
+$e_i = y_i - \hat{y}_i$, la diferencia entre el valor real y el valor pronosticado es el error.
+
+
+# Minimizar la suma de cuadrados del error
+$$MSE = \sum_{i=1}^{n}e_i^2 = \sum_{i=1}^{n}(y_i - \beta_0-\beta_1x_i)^2$$
+$$f(\beta_0, \beta_1) = \sum_{i=1}^{n}(y_i - \beta_0-\beta_1x_i)^2$$
+$$f(x, y) = \sum_{i=1}^{n}(peso_i - x - y * estat_i)^2$$
+
+
+* Objetivo: Encontrar los $\mathbf{\beta}$ que minimizan el MSE.
+
+* Paso 1A: derivar MSE con respecto $\beta_0$ e igual a 0
+* Paso 1B: derivar MSE con respecto $\beta_1$ e igual a 0
+
+$$\frac{d\left(\sum_i^{n}(y_i - \beta_0+\beta_1x_i)^2\right)}{d\beta_0} = 0 = \sum_{i=1}^{n}-2(y_i- \beta_0+\beta_1x_i)=0$$
+$$\frac{d\left(\sum_i^{n}(y_i - \beta_0+\beta_1x_i)^2\right)}{d\beta_1} = 0= \sum_{i=1}^{n}-2(y_i- \beta_0+\beta_1x_i)x_i=$$
+Paso 2: Despejar $\beta_0$ y $\beta_1$ 
+Despejando Beta 0 de la primera ecuación 
+
+$$\hat{\beta_0} = \sum_{i=1}^{n}(y_i- \beta_1x_i)=0 = \overline{y}-\beta_1\overline{x} $$
+$$\hat{\beta_1}=\frac{\sum_{i=1}^n(x_i-\overline{x})(y_i-\overline{y})/n}{\sum_{i=1}^n(x_i-\overline{x})^2/n}$$
+
+```{r}
+data(iris)
+# x: ancho del patalo, y: longitud del petalo
+plot(iris$Petal.Width ~ iris$Petal.Length )
+```
+
+```{r}
+modelo <- lm(iris$Petal.Width ~ iris$Petal.Length , data = iris)
+plot(iris$Petal.Width ~ iris$Petal.Length, pch = 20 )
+abline(modelo)
+```
+
+```{r}
+summary(modelo)
+```
+
+```{r}
+beta1 <- cov(iris$Petal.Length, iris$Petal.Width) / var(iris$Petal.Length)
+beta1
+```
+
+```{r}
+beta0 <- mean(iris$Petal.Width) - 0.4157554 * mean(iris$Petal.Length)
+beta0
+```
+Igual que el procedimieno de R :)
+
+
+# Se puede resolver con un paquete de optimización ##########
+
+Minimizar:
+$$MSE = \sum_{i=1}^{n}e_i^2 = \sum_{i=1}^{n}(y_i - \beta_0+\beta_1x_i)^2$$
+
+
+```{r}
+library(nloptr)
+x <- iris$Petal.Length
+y <-  iris$Petal.Width
+
+mse <- function(beta){
+  beta_0 <- beta[1]
+  beta_1 <- beta[2]
+  
+sum((y - beta_0 - beta_1*x)^2)  
+}
+
+# Sin restricción
+
+opts = list("algorithm" = "NLOPT_LN_BOBYQA", "xtol_rel" = 1.0e-16,
+              "maxeval" = 10000)
+
+nloptr(x0 = beta_inicial, eval_f = mse, 
+       eval_grad_f = NULL, opts = opts)
+
+```
+
+
+
+```{r}
+# COn restricciones poner el beta_0 casi igual a cero
+beta_inicial <- c(0, 30)
+opts = list("algorithm" = "NLOPT_LN_BOBYQA", "xtol_rel" = 1.0e-16,
+              "maxeval" = 10000)
+
+nloptr(x0 = beta_inicial, eval_f = mse, lb = c(-0.01,-Inf), ub = c(0.01,Inf),
+       eval_grad_f = NULL, opts = opts)
+
+```
+
